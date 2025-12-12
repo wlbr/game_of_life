@@ -2,8 +2,9 @@ package main
 
 import (
 	"log"
+	"time"
 
-	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/v3"
 )
 
 type NCursesPrinter struct {
@@ -34,22 +35,25 @@ func (p *NCursesPrinter) Init(xdim, ydim int) {
 	y2 := y1 + ydim + 1
 	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
 	for col := x1; col <= x2; col++ {
-		p.screen.SetContent(col, y1, tcell.RuneHLine, nil, style)
-		p.screen.SetContent(col, y2, tcell.RuneHLine, nil, style)
+		p.screen.Put(col, y1, string(tcell.RuneHLine), style)
+		p.screen.Put(col, y2, string(tcell.RuneHLine), style)
 	}
 	for row := y1 + 1; row < y2; row++ {
-		p.screen.SetContent(x1, row, tcell.RuneVLine, nil, style)
-		p.screen.SetContent(x2, row, tcell.RuneVLine, nil, style)
+		p.screen.Put(x1, row, string(tcell.RuneVLine), style)
+		p.screen.Put(x2, row, string(tcell.RuneVLine), style)
 	}
-	p.screen.SetContent(x1, y1, tcell.RuneULCorner, nil, style)
-	p.screen.SetContent(x2, y1, tcell.RuneURCorner, nil, style)
-	p.screen.SetContent(x1, y2, tcell.RuneLLCorner, nil, style)
-	p.screen.SetContent(x2, y2, tcell.RuneLRCorner, nil, style)
+	p.screen.Put(x1, y1, string(tcell.RuneULCorner), style)
+	p.screen.Put(x2, y1, string(tcell.RuneURCorner), style)
+	p.screen.Put(x1, y2, string(tcell.RuneLLCorner), style)
+	p.screen.Put(x2, y2, string(tcell.RuneLRCorner), style)
 
 	p.screen.Show()
 }
 
 func (p *NCursesPrinter) Quit() {
+	p.screen.Put(1, 1, "X", tcell.StyleDefault.Background(tcell.ColorLightGray).Foreground(tcell.ColorBlack))
+	p.screen.Show()
+	time.Sleep(1 * time.Second)
 	p.screen.Fini()
 }
 
@@ -57,9 +61,9 @@ func (p *NCursesPrinter) Update(b *Board) {
 	for y, l := range b.elements {
 		for x, e := range l {
 			if e {
-				p.screen.SetContent(x+1, y+1, ' ', nil, tcell.StyleDefault.Background(tcell.ColorLightGray).Foreground(tcell.ColorBlack))
+				p.screen.Put(x+1, y+1, " ", tcell.StyleDefault.Background(tcell.ColorLightGray).Foreground(tcell.ColorBlack))
 			} else {
-				p.screen.SetContent(x+1, y+1, ' ', nil, tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorBlack))
+				p.screen.Put(x+1, y+1, " ", tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorBlack))
 			}
 
 		}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"math/rand"
 )
 
@@ -19,19 +19,17 @@ func (b *Board) AddPatternFromString(offsetx, offsety int, pattern string) {
 	}
 }
 
-func (b *Board) AddRandom(int, int) *Board {
+func (b *Board) AddRandom(int, int) {
 	for y, l := range b.elements {
 		for x := range l {
-			//  rand.Seed(time.Now().UnixNano())
 			b.Set(x, y, rand.Intn(2) == 1)
 		}
 	}
-	return b
 }
 
-func (b *Board) AddBeehive(x, y int) *Board {
+func (b *Board) AddBeehive(x, y int) error {
 	if b.dimx-x < 2 || b.dimy-y < 2 {
-		log.Fatal("Dimensions need to be 5,6 at least.")
+		return fmt.Errorf("board dimensions (%d, %d) are too small for beehive at (%d, %d)", b.dimx, b.dimy, x, y)
 	}
 
 	coords := [][]int{{1, 0},
@@ -41,37 +39,37 @@ func (b *Board) AddBeehive(x, y int) *Board {
 	for _, c := range coords {
 		b.Set(x+c[0], y+c[1], true)
 	}
-
-	return b
+	return nil
 }
 
-func (b *Board) AddBlinker(x, y int) *Board {
+func (b *Board) AddBlinker(x, y int) error {
 	if b.dimx-x < 5 || b.dimy-y < 5 {
-		log.Fatal("Dimensions need to be 5,5 at least.")
+		return fmt.Errorf("board dimensions (%d, %d) are too small for blinker at (%d, %d)", b.dimx, b.dimy, x, y)
 	}
 
 	coords := [][]int{{2, 3}, {3, 3}, {4, 3}}
 	for _, c := range coords {
 		b.Set(x+c[0], y+c[1], true)
 	}
-
-	return b
+	return nil
 }
 
-func (b *Board) AddGlider(x, y int) *Board {
+func (b *Board) AddGlider(x, y int) error {
 	if b.dimx+x < 2 || b.dimy+y < 2 {
-		log.Fatal("Dimensions need to be 10,10 at least.")
+		return fmt.Errorf("board dimensions (%d, %d) are too small for glider at (%d, %d)", b.dimx, b.dimy, x, y)
 	}
 
 	coords := [][]int{{0, 1}, {1, 2}, {2, 0}, {2, 1}, {2, 2}}
 	for _, c := range coords {
 		b.Set(x+c[0], y+c[1], true)
 	}
-
-	return b
+	return nil
 }
 
-func (b *Board) AddGliderGun(x, y int) *Board {
+func (b *Board) AddGliderGun(x, y int) error {
+	if b.dimx-x < 37 || b.dimy-y < 9 {
+		return fmt.Errorf("board dimensions (%d, %d) are too small for FPentomino at (%d, %d)", b.dimx, b.dimy, x, y)
+	}
 	pattern := `........................O...........
 ......................O.O...........
 ............OO......OO............OO
@@ -82,10 +80,13 @@ OO........O...O.OO....O.O...........
 ...........O...O....................
 ............OO......................`
 	b.AddPatternFromString(x, y, pattern)
-	return b
+	return nil
 }
 
-func (b *Board) AddGliderGun2(x, y int) *Board {
+func (b *Board) AddGliderGun2(x, y int) error {
+	if b.dimx-x < 40 || b.dimy-y < 26 {
+		return fmt.Errorf("board dimensions (%d, %d) are too small for FPentomino at (%d, %d)", b.dimx, b.dimy, x, y)
+	}
 	pattern := `............................O..........
 ............................O.O........
 ...........OO..................OO......
@@ -114,10 +115,13 @@ OO....OO...O...O...O...O.O.............
 ...................................O...
 ...................................OO..`
 	b.AddPatternFromString(x, y, pattern)
-	return b
+	return nil
 }
 
-func (b *Board) AddReflector(x, y int) *Board {
+func (b *Board) AddReflector(x, y int) error {
+	if b.dimx-x < 9 || b.dimy-y < 21 {
+		return fmt.Errorf("board dimensions (%d, %d) are too small for Reflector at (%d, %d)", b.dimx, b.dimy, x, y)
+	}
 	pattern := `........O
 ......OOO
 .....O...
@@ -142,10 +146,13 @@ O.....O..
 ...OO....
 ...OO....`
 	b.AddPatternFromString(x, y, pattern)
-	return b
+	return nil
 }
 
-func (b *Board) AddSuicide(x, y int) *Board {
+func (b *Board) AddSuicide(x, y int) error {
+	if b.dimx-x < 9 || b.dimy-y < 8 {
+		return fmt.Errorf("board dimensions (%d, %d) are too small for Suicide pattern at (%d, %d)", b.dimx, b.dimy, x, y)
+	}
 	pattern := `.........
 ...OOO...
 ...O.O...
@@ -156,15 +163,18 @@ func (b *Board) AddSuicide(x, y int) *Board {
 ...OOO...
 .........`
 	b.AddPatternFromString(x, y, pattern)
-	return b
+	return nil
 }
 
-func (b *Board) AddFPentomino(x, y int) *Board {
+func (b *Board) AddFPentomino(x, y int) error {
+	if b.dimx-x < 5 || b.dimy-y < 4 {
+		return fmt.Errorf("board dimensions (%d, %d) are too small for FPentomino at (%d, %d)", b.dimx, b.dimy, x, y)
+	}
 	pattern := `.....
 ..OO.
 .OO..
 ..O..
 .....`
 	b.AddPatternFromString(x, y, pattern)
-	return b
+	return nil
 }
